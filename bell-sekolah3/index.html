@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Bel Sekolah Premium</title>
+    <link rel="icon" href="gambar/img.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --dark: #1e1b4b;
+            --light: #f0f9ff;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-hover: rgba(255, 255, 255, 0.12);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(76, 201, 240, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(67, 97, 238, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px;
+            width: 95%;
+            max-width: 1400px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h1 i {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .school-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .school-badge {
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .day-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: var(--card-bg);
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .day-btn {
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .day-btn:hover::before {
+            left: 100%;
+        }
+
+        .day-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .day-btn.active {
+            background: var(--accent);
+            color: var(--dark);
+            box-shadow: 0 4px 12px rgba(76, 201, 240, 0.4);
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            background: var(--card-hover);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-card h3 {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .info-card p {
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .clock-container {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .clock {
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+            padding: 30px 50px;
+            border-radius: 20px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            letter-spacing: 4px;
+            display: inline-block;
+            margin: 15px 0;
+            text-shadow: 0 0 20px rgba(76, 201, 240, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clock::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        button {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, var(--warning), #f59e0b);
+            color: var(--dark);
+        }
+
+        .danger-btn {
+            background: linear-gradient(135deg, var(--danger), #ef4444);
+            color: white;
+        }
+
+        .success-btn {
+            background: linear-gradient(135deg, var(--success), #22c55e);
+            color: white;
+        }
+
+        .info-btn {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .schedule-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .schedule-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .schedule-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .schedule-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .schedule-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .schedule-list {
+            list-style-type: none;
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .schedule-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.02), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .schedule-item:hover::before {
+            opacity: 1;
+        }
+
+        .schedule-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .active {
+            background: rgba(76, 201, 240, 0.15);
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(76, 201, 240, 0.3);
+        }
+
+        .schedule-time {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .schedule-label {
+            flex: 1;
+            margin: 0 20px;
+            text-align: left;
+        }
+
+        .schedule-details {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 4px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .schedule-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 201, 240, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            transform: translateX(400px);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 400px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--success), #22c55e);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning), #f59e0b);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger), #ef4444);
+        }
+
+        .floating-bell {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(76, 201, 240, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            border: none;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating-bell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(76, 201, 240, 0.6);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 35px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .duration-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .duration-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .duration-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76, 201, 240, 0.4);
+            border: 2px solid white;
+        }
+
+        .duration-value {
+            min-width: 60px;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 25px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .file-upload:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .file-upload i {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .schedule-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .sound-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .volume-slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(76, 201, 240, 0.4);
+        }
+
+        .sound-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .sound-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        .sound-details {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 6px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .sound-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .status-inactive {
+            background: var(--danger);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .clock {
+                font-size: 3rem;
+                padding: 20px 30px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            button {
+                padding: 14px 24px;
+                font-size: 0.9rem;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-content {
+                justify-content: center;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Test Bell Section */
+        .test-bell-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-bell-container select {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark);
+        }
+
+        .empty-sound-message {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        /* Multiple File Upload Styles */
+        .file-list {
+            width: 100%;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .file-icon {
+            color: var(--accent);
+        }
+
+        .file-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .file-name-input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .file-duration {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 100px;
+        }
+
+        .file-duration input {
+            width: 50px;
+            padding: 5px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .remove-file {
+            background: rgba(248, 113, 113, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remove-file:hover {
+            background: rgba(248, 113, 113, 0.4);
+            transform: scale(1.1);
+        }
+
+        .batch-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .batch-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .batch-add {
+            background: linear-gradient(135deg, var(--success), #22c55e);
+        }
+
+        .batch-clear {
+            background: linear-gradient(135deg, var(--danger), #ef4444);
+        }
+
+        .upload-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .upload-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .storage-info {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-bell"></i> Bel Sekolah Premium</h1>
+                <div class="school-info">
+                    <div class="school-badge">
+                        <i class="fas fa-school"></i>
+                        <span>SMK Mambaul Ikhsan</span>
+                    </div>
+                    <div class="school-badge">
+                        <i class="fas fa-clock"></i>
+                        <span id="currentDate">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="day-selector">
+                <button class="day-btn active" data-day="senin">Senin</button>
+                <button class="day-btn" data-day="selasa">Selasa</button>
+                <button class="day-btn" data-day="rabu">Rabu</button>
+                <button class="day-btn" data-day="kamis">Kamis</button>
+                <button class="day-btn" data-day="ahad">Ahad</button>
+                <button class="day-btn" data-day="sabtu">Sabtu</button>
+            </div>
+        </header>
+        
+        <div class="info-panel">
+            <div class="info-card">
+                <h3><i class="fas fa-calendar-day"></i> Hari Ini</h3>
+                <p id="currentDay">Senin</p>
+            </div>
+            <div class="info-card">
+                <h3><i class="fas fa-clock"></i> Status Bel</h3>
+                <p id="bellStatus"><span class="status-indicator status-inactive"></span>Tidak Aktif</p>
+            </div>
+            <div class="info-card">
+                <h3><i class="fas fa-bell"></i> Bel Berikutnya</h3>
+                <p id="nextBell">-</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="nextBellProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="info-card">
+                <h3><i class="fas fa-volume-up"></i> Volume Sistem</h3>
+                <p id="volumeLevel">80%</p>
+            </div>
+        </div>
+        
+        <div class="clock-container">
+            <div class="clock" id="clock">00:00:00</div>
+        </div>
+        
+        <div class="controls">
+            <button class="primary-btn" id="startBtn">
+                <i class="fas fa-play"></i> Mulai Bel Otomatis
+            </button>
+            <button class="secondary-btn" id="manualBtn">
+                <i class="fas fa-bell"></i> Bunyikan Bel Manual
+            </button>
+            <button class="danger-btn" id="stopBtn">
+                <i class="fas fa-stop"></i> Hentikan Bel
+            </button>
+            <button class="success-btn" id="editBtn">
+                <i class="fas fa-edit"></i> Edit Jadwal
+            </button>
+            <button class="info-btn" id="soundBtn">
+                <i class="fas fa-music"></i> Kelola Suara
+            </button>
+        </div>
+
+        <div class="test-bell-container">
+            <label for="testSoundSelect">Test Suara:</label>
+            <select id="testSoundSelect">
+                <option value="">Pilih suara untuk di-test</option>
+            </select>
+            <button class="primary-btn" id="testSelectedSoundBtn">
+                <i class="fas fa-play"></i> Test
+            </button>
+        </div>
+        
+        <div class="schedule-container">
+            <h2 class="schedule-title"><i class="fas fa-list-alt"></i> Jadwal Bel Sekolah - <span id="scheduleDay">Senin</span></h2>
+            <ul class="schedule-list" id="scheduleList">
+                <!-- Jadwal akan diisi oleh JavaScript -->
+            </ul>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-bell"></i>
+        <span id="notificationText">Bel Berbunyi!</span>
+    </div>
+
+    <button class="floating-bell" id="floatingBellBtn">
+        <i class="fas fa-bell"></i>
+    </button>
+
+    <!-- Modal Edit Jadwal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Jadwal Bel</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="editDay"><i class="fas fa-calendar"></i> Hari</label>
+                    <select id="editDay">
+                        <option value="senin">Senin</option>
+                        <option value="selasa">Selasa</option>
+                        <option value="rabu">Rabu</option>
+                        <option value="kamis">Kamis</option>
+                        <option value="ahad">Ahad</option>
+                        <option value="sabtu">Sabtu</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bellTime"><i class="fas fa-clock"></i> Waktu</label>
+                    <input type="time" id="bellTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="bellLabel"><i class="fas fa-tag"></i> Keterangan</label>
+                    <input type="text" id="bellLabel" placeholder="Contoh: Bel Masuk, Istirahat, dll." required>
+                </div>
+                <div class="form-group">
+                    <label for="bellSound"><i class="fas fa-music"></i> Suara Bel</label>
+                    <select id="bellSound">
+                        <!-- Opsi suara akan diisi oleh JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bellDuration"><i class="fas fa-hourglass-half"></i> Durasi Bel (detik)</label>
+                    <div class="duration-control">
+                        <input type="range" id="bellDuration" class="duration-slider" min="1" max="30" value="5">
+                        <span id="durationValue" class="duration-value">5 detik</span>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="secondary-btn" id="cancelBtn">Batal</button>
+                    <button type="submit" class="primary-btn">
+                        <i class="fas fa-save"></i> Simpan Jadwal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Kelola Suara -->
+    <div class="modal" id="soundModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-music"></i> Kelola Suara Bel</h2>
+                <button class="close-btn" id="closeSoundModal">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-plus-circle"></i> Tambah Suara Baru</label>
+                <div class="file-upload" id="fileUpload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Klik untuk mengunggah file suara (MP3, WAV) - Bisa memilih multiple file</span>
+                    <input type="file" id="soundFile" accept="audio/*" multiple style="display: none;">
+                </div>
+                
+                <div class="storage-info" id="storageInfo">
+                    <i class="fas fa-database"></i> Penyimpanan: <span id="storageStatus">Mengecek...</span>
+                </div>
+                
+                <div id="fileInfo"></div>
+                
+                <div class="file-list" id="fileList" style="display: none;">
+                    <!-- Daftar file yang dipilih akan ditampilkan di sini -->
+                </div>
+                
+                <div class="upload-progress" id="uploadProgress" style="display: none;">
+                    <div class="upload-progress-fill" id="uploadProgressFill"></div>
+                </div>
+                
+                <div class="batch-actions" id="batchActions" style="display: none;">
+                    <button class="batch-btn batch-add" id="addMultipleSoundsBtn">
+                        <i class="fas fa-plus"></i> Tambah Semua Suara
+                    </button>
+                    <button class="batch-btn batch-clear" id="clearFilesBtn">
+                        <i class="fas fa-trash"></i> Hapus Semua
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <h3 style="margin-top: 20px;"><i class="fas fa-list"></i> Daftar Suara Tersedia</h3>
+                <div id="soundsList">
+                    <!-- Daftar suara akan diisi oleh JavaScript -->
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" class="secondary-btn" id="cancelSoundBtn">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data jadwal bel sekolah
+        let scheduleData = {
+            senin: [
+                { time: "07:00", label: "Bel Masuk Sekolah", sound: "default", duration: 5 },
+                { time: "09:30", label: "Bel Istirahat", sound: "default", duration: 3 },
+                { time: "12:00", label: "Bel Istirahat Siang", sound: "default", duration: 3 },
+                { time: "14:00", label: "Bel Pulang", sound: "default", duration: 5 }
+            ],
+            selasa: [
+                { time: "07:00", label: "Bel Masuk Sekolah", sound: "default", duration: 5 },
+                { time: "09:30", label: "Bel Istirahat", sound: "default", duration: 3 },
+                { time: "12:00", label: "Bel Istirahat Siang", sound: "default", duration: 3 },
+                { time: "14:00", label: "Bel Pulang", sound: "default", duration: 5 }
+            ],
+            rabu: [
+                { time: "07:00", label: "Bel Masuk Sekolah", sound: "default", duration: 5 },
+                { time: "08:00", label: "Bel Upacara", sound: "default", duration: 8 },
+                { time: "09:30", label: "Bel Istirahat", sound: "default", duration: 3 },
+                { time: "12:00", label: "Bel Istirahat Siang", sound: "default", duration: 3 },
+                { time: "14:00", label: "Bel Pulang", sound: "default", duration: 5 }
+            ],
+            kamis: [
+                { time: "07:00", label: "Bel Masuk Sekolah", sound: "default", duration: 5 },
+                { time: "09:30", label: "Bel Istirahat", sound: "default", duration: 3 },
+                { time: "12:00", label: "Bel Istirahat Siang", sound: "default", duration: 3 },
+                { time: "14:00", label: "Bel Pulang", sound: "default", duration: 5 }
+            ],
+            ahad: [
+                { time: "07:00", label: "Bel Masuk Sekolah", sound: "default", duration: 5 },
+                { time: "09:00", label: "Bel Sholat Jumat", sound: "default", duration: 8 },
+                { time: "11:30", label: "Bel Kembali Belajar", sound: "default", duration: 2 },
+                { time: "13:00", label: "Bel Pulang", sound: "default", duration: 5 }
+            ],
+            sabtu: [
+                { time: "07:30", label: "Bel Masuk Sekolah", sound: "default", duration: 5 },
+                { time: "10:00", label: "Bel Istirahat", sound: "default", duration: 3 },
+                { time: "12:00", label: "Bel Pulang", sound: "default", duration: 5 }
+            ]
+        };
+
+        // Data suara bel - menggunakan IndexedDB
+        let soundData = {
+            "default": { 
+                name: "Bel Standar", 
+                data: null, 
+                volume: 0.7,
+                defaultDuration: 5,
+                type: "default"
+            }
+        };
+
+        // Elemen DOM
+        const elements = {
+            clock: document.getElementById('clock'),
+            scheduleList: document.getElementById('scheduleList'),
+            startBtn: document.getElementById('startBtn'),
+            manualBtn: document.getElementById('manualBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            editBtn: document.getElementById('editBtn'),
+            soundBtn: document.getElementById('soundBtn'),
+            notification: document.getElementById('notification'),
+            notificationText: document.getElementById('notificationText'),
+            currentDay: document.getElementById('currentDay'),
+            bellStatus: document.getElementById('bellStatus'),
+            nextBell: document.getElementById('nextBell'),
+            volumeLevel: document.getElementById('volumeLevel'),
+            scheduleDay: document.getElementById('scheduleDay'),
+            dayButtons: document.querySelectorAll('.day-btn'),
+            editModal: document.getElementById('editModal'),
+            closeModal: document.getElementById('closeModal'),
+            cancelBtn: document.getElementById('cancelBtn'),
+            scheduleForm: document.getElementById('scheduleForm'),
+            editDay: document.getElementById('editDay'),
+            bellTime: document.getElementById('bellTime'),
+            bellLabel: document.getElementById('bellLabel'),
+            bellSound: document.getElementById('bellSound'),
+            bellDuration: document.getElementById('bellDuration'),
+            durationValue: document.getElementById('durationValue'),
+            soundModal: document.getElementById('soundModal'),
+            closeSoundModal: document.getElementById('closeSoundModal'),
+            cancelSoundBtn: document.getElementById('cancelSoundBtn'),
+            fileUpload: document.getElementById('fileUpload'),
+            soundFile: document.getElementById('soundFile'),
+            fileInfo: document.getElementById('fileInfo'),
+            soundsList: document.getElementById('soundsList'),
+            floatingBellBtn: document.getElementById('floatingBellBtn'),
+            currentDate: document.getElementById('currentDate'),
+            nextBellProgress: document.getElementById('nextBellProgress'),
+            testSoundSelect: document.getElementById('testSoundSelect'),
+            testSelectedSoundBtn: document.getElementById('testSelectedSoundBtn'),
+            fileList: document.getElementById('fileList'),
+            batchActions: document.getElementById('batchActions'),
+            addMultipleSoundsBtn: document.getElementById('addMultipleSoundsBtn'),
+            clearFilesBtn: document.getElementById('clearFilesBtn'),
+            uploadProgress: document.getElementById('uploadProgress'),
+            uploadProgressFill: document.getElementById('uploadProgressFill'),
+            storageInfo: document.getElementById('storageInfo'),
+            storageStatus: document.getElementById('storageStatus')
+        };
+
+        // State management
+        let state = {
+            isAutoMode: false,
+            currentDay: 'senin',
+            editingIndex: -1,
+            currentAudio: null,
+            selectedFiles: [],
+            currentBellTimeout: null,
+            lastRungTimes: {},
+            systemVolume: 0.7,
+            nextBellTime: null,
+            db: null
+        };
+
+        // IndexedDB Setup
+        const DB_NAME = 'BellSchoolDB';
+        const DB_VERSION = 1;
+        const STORE_SCHEDULES = 'schedules';
+        const STORE_SOUNDS = 'sounds';
+
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => {
+                    console.error('❌ Error membuka database:', request.error);
+                    reject(request.error);
+                };
+                
+                request.onsuccess = () => {
+                    state.db = request.result;
+                    console.log('✅ Database berhasil dibuka');
+                    resolve(state.db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    
+                    // Buat store untuk schedules jika belum ada
+                    if (!db.objectStoreNames.contains(STORE_SCHEDULES)) {
+                        const scheduleStore = db.createObjectStore(STORE_SCHEDULES, { keyPath: 'id', autoIncrement: true });
+                        scheduleStore.createIndex('day', 'day', { unique: false });
+                    }
+                    
+                    // Buat store untuk sounds jika belum ada
+                    if (!db.objectStoreNames.contains(STORE_SOUNDS)) {
+                        const soundStore = db.createObjectStore(STORE_SOUNDS, { keyPath: 'id' });
+                        soundStore.createIndex('name', 'name', { unique: false });
+                    }
+                    
+                    console.log('🗃️ Database diinisialisasi');
+                };
+            });
+        }
+
+        // Save schedules to IndexedDB
+        async function saveSchedulesToDB() {
+            if (!state.db) return;
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction([STORE_SCHEDULES], 'readwrite');
+                const store = transaction.objectStore(STORE_SCHEDULES);
+                
+                // Hapus semua data lama
+                const clearRequest = store.clear();
+                
+                clearRequest.onsuccess = () => {
+                    // Simpan data baru
+                    let savedCount = 0;
+                    const totalDays = Object.keys(scheduleData).length;
+                    
+                    Object.keys(scheduleData).forEach(day => {
+                        scheduleData[day].forEach((schedule, index) => {
+                            const scheduleItem = {
+                                day: day,
+                                time: schedule.time,
+                                label: schedule.label,
+                                sound: schedule.sound,
+                                duration: schedule.duration,
+                                order: index
+                            };
+                            
+                            const addRequest = store.add(scheduleItem);
+                            
+                            addRequest.onsuccess = () => {
+                                savedCount++;
+                                if (savedCount === totalDays * scheduleData[day].length) {
+                                    console.log('💾 Jadwal disimpan ke database');
+                                    resolve();
+                                }
+                            };
+                            
+                            addRequest.onerror = () => {
+                                console.error('❌ Error menyimpan jadwal:', addRequest.error);
+                                reject(addRequest.error);
+                            };
+                        });
+                    });
+                };
+                
+                clearRequest.onerror = () => {
+                    console.error('❌ Error menghapus jadwal lama:', clearRequest.error);
+                    reject(clearRequest.error);
+                };
+            });
+        }
+
+        // Load schedules from IndexedDB
+        async function loadSchedulesFromDB() {
+            if (!state.db) return;
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction([STORE_SCHEDULES], 'readonly');
+                const store = transaction.objectStore(STORE_SCHEDULES);
+                const request = store.getAll();
+                
+                request.onsuccess = () => {
+                    const schedules = request.result;
+                    
+                    // Reset schedule data
+                    scheduleData = {
+                        senin: [], selasa: [], rabu: [], kamis: [], jumat: [], sabtu: []
+                    };
+                    
+                    // Group schedules by day
+                    schedules.forEach(item => {
+                        if (scheduleData[item.day]) {
+                            scheduleData[item.day].push({
+                                time: item.time,
+                                label: item.label,
+                                sound: item.sound,
+                                duration: item.duration
+                            });
+                        }
+                    });
+                    
+                    // Sort each day's schedules by time
+                    Object.keys(scheduleData).forEach(day => {
+                        scheduleData[day].sort((a, b) => a.time.localeCompare(b.time));
+                    });
+                    
+                    console.log('📂 Jadwal dimuat dari database:', schedules.length + ' item');
+                    resolve();
+                };
+                
+                request.onerror = () => {
+                    console.error('❌ Error memuat jadwal:', request.error);
+                    reject(request.error);
+                };
+            });
+        }
+
+        // Save sound to IndexedDB
+        async function saveSoundToDB(soundId, soundData) {
+            if (!state.db) return;
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction([STORE_SOUNDS], 'readwrite');
+                const store = transaction.objectStore(STORE_SOUNDS);
+                
+                const soundItem = {
+                    id: soundId,
+                    name: soundData.name,
+                    data: soundData.data,
+                    volume: soundData.volume,
+                    defaultDuration: soundData.defaultDuration,
+                    type: 'uploaded'
+                };
+                
+                const request = store.put(soundItem);
+                
+                request.onsuccess = () => {
+                    console.log('💾 Suara disimpan:', soundId);
+                    resolve();
+                };
+                
+                request.onerror = () => {
+                    console.error('❌ Error menyimpan suara:', request.error);
+                    reject(request.error);
+                };
+            });
+        }
+
+        // Load sounds from IndexedDB
+        async function loadSoundsFromDB() {
+            if (!state.db) return;
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction([STORE_SOUNDS], 'readonly');
+                const store = transaction.objectStore(STORE_SOUNDS);
+                const request = store.getAll();
+                
+                request.onsuccess = () => {
+                    const sounds = request.result;
+                    
+                    // Reset sound data (keep default)
+                    const defaultSound = soundData.default;
+                    soundData = { default: defaultSound };
+                    
+                    // Load saved sounds
+                    sounds.forEach(sound => {
+                        soundData[sound.id] = {
+                            name: sound.name,
+                            data: sound.data,
+                            volume: sound.volume || 0.7,
+                            defaultDuration: sound.defaultDuration || 5,
+                            type: sound.type || 'uploaded'
+                        };
+                    });
+                    
+                    console.log('📂 Suara dimuat dari database:', sounds.length + ' suara');
+                    resolve();
+                };
+                
+                request.onerror = () => {
+                    console.error('❌ Error memuat suara:', request.error);
+                    reject(request.error);
+                };
+            });
+        }
+
+        // Delete sound from IndexedDB
+        async function deleteSoundFromDB(soundId) {
+            if (!state.db) return;
+            
+            return new Promise((resolve, reject) => {
+                const transaction = state.db.transaction([STORE_SOUNDS], 'readwrite');
+                const store = transaction.objectStore(STORE_SOUNDS);
+                const request = store.delete(soundId);
+                
+                request.onsuccess = () => {
+                    console.log('🗑️ Suara dihapus:', soundId);
+                    resolve();
+                };
+                
+                request.onerror = () => {
+                    console.error('❌ Error menghapus suara:', request.error);
+                    reject(request.error);
+                };
+            });
+        }
+
+        // Check storage usage
+        async function checkStorageUsage() {
+            if (!navigator.storage || !navigator.storage.estimate) {
+                elements.storageStatus.textContent = 'Tidak tersedia di browser ini';
+                return;
+            }
+            
+            try {
+                const estimate = await navigator.storage.estimate();
+                const used = estimate.usage || 0;
+                const quota = estimate.quota || 0;
+                const percentage = (used / quota * 100).toFixed(1);
+                
+                elements.storageStatus.textContent = 
+                    `${(used / 1024 / 1024).toFixed(2)} MB / ${(quota / 1024 / 1024).toFixed(2)} MB (${percentage}%)`;
+                
+                if (percentage > 80) {
+                    elements.storageStatus.style.color = 'var(--danger)';
+                } else if (percentage > 60) {
+                    elements.storageStatus.style.color = 'var(--warning)';
+                } else {
+                    elements.storageStatus.style.color = 'var(--success)';
+                }
+            } catch (error) {
+                console.error('Error checking storage:', error);
+                elements.storageStatus.textContent = 'Error memeriksa penyimpanan';
+            }
+        }
+
+        // Format tanggal Indonesia
+        function formatIndonesianDate(date) {
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            
+            const dayName = days[date.getDay()];
+            const dateNum = date.getDate();
+            const monthName = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            return `${dayName}, ${dateNum} ${monthName} ${year}`;
+        }
+
+        // Update tanggal
+        function updateCurrentDate() {
+            const now = new Date();
+            elements.currentDate.textContent = formatIndonesianDate(now);
+        }
+
+        // Fungsi untuk memperbarui jam dengan animasi yang lebih smooth
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            elements.clock.textContent = `${hours}:${minutes}:${seconds}`;
+            
+            const days = ['minggu', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'];
+            const today = days[now.getDay()];
+            elements.currentDay.textContent = today.charAt(0).toUpperCase() + today.slice(1);
+            
+            if (state.isAutoMode) {
+                const currentTime = `${hours}:${minutes}`;
+                const todaySchedule = scheduleData[today] || [];
+                
+                todaySchedule.forEach((item, index) => {
+                    const scheduleKey = `${today}-${item.time}-${item.label}`;
+                    
+                    if (item.time === currentTime && !state.lastRungTimes[scheduleKey]) {
+                        console.log(`🔔 Bel berbunyi: ${item.label} pada ${currentTime}`);
+                        ringBell(item.sound, item.duration);
+                        showNotification(`${item.label} - ${currentTime} (${item.duration} detik)`, 'success');
+                        updateActiveSchedule(today, index);
+                        
+                        state.lastRungTimes[scheduleKey] = true;
+                        
+                        setTimeout(() => {
+                            delete state.lastRungTimes[scheduleKey];
+                        }, 60000);
+                    }
+                });
+                
+                updateNextBell(today, currentTime);
+            }
+        }
+
+        // Update bel berikutnya dengan progress bar
+        function updateNextBell(day, currentTime) {
+            const schedule = scheduleData[day] || [];
+            const now = new Date();
+            const currentDateTime = new Date(now.toDateString() + ' ' + currentTime);
+            
+            for (let i = 0; i < schedule.length; i++) {
+                if (schedule[i].time > currentTime) {
+                    const nextBellDateTime = new Date(now.toDateString() + ' ' + schedule[i].time);
+                    const timeDiff = nextBellDateTime - currentDateTime;
+                    const totalDayMs = 24 * 60 * 60 * 1000;
+                    const progress = ((totalDayMs - timeDiff) / totalDayMs) * 100;
+                    
+                    elements.nextBell.textContent = `${schedule[i].time} - ${schedule[i].label}`;
+                    elements.nextBellProgress.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+                    state.nextBellTime = schedule[i].time;
+                    return;
+                }
+            }
+            elements.nextBell.textContent = "Tidak ada";
+            elements.nextBellProgress.style.width = '0%';
+            state.nextBellTime = null;
+        }
+
+        // Fungsi untuk membunyikan bel dengan efek visual (tanpa goyangan)
+        function ringBell(soundId = "default", duration = 5) {
+            elements.floatingBellBtn.classList.add('pulse');
+            playBellSound(soundId, duration);
+            
+            setTimeout(() => {
+                elements.floatingBellBtn.classList.remove('pulse');
+            }, duration * 1000);
+        }
+
+        // Improved bell sound function
+        function playBellSound(soundId, duration) {
+            stopCurrentSound();
+            
+            const sound = soundData[soundId];
+            if (sound && sound.data) {
+                // Create audio from base64 data
+                const audioBlob = base64ToBlob(sound.data, 'audio/mp3');
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                state.currentAudio = new Audio(audioUrl);
+                state.currentAudio.volume = sound.volume * state.systemVolume;
+                
+                state.currentAudio.addEventListener('ended', function() {
+                    console.log("✅ Audio selesai diputar");
+                    state.currentAudio = null;
+                    URL.revokeObjectURL(audioUrl); // Clean up
+                });
+                
+                state.currentAudio.addEventListener('error', function(e) {
+                    console.error("❌ Error memutar audio:", e);
+                    state.currentAudio = null;
+                    URL.revokeObjectURL(audioUrl); // Clean up
+                    playDefaultBellSound(duration);
+                });
+                
+                try {
+                    state.currentAudio.play().then(() => {
+                        console.log("🔊 Audio berhasil diputar");
+                    }).catch(error => {
+                        console.error("❌ Gagal memutar audio:", error);
+                        URL.revokeObjectURL(audioUrl); // Clean up
+                        playDefaultBellSound(duration);
+                    });
+                    
+                } catch (error) {
+                    console.error("❌ Error saat memutar audio:", error);
+                    URL.revokeObjectURL(audioUrl); // Clean up
+                    playDefaultBellSound(duration);
+                }
+            } else {
+                console.log("🔔 Menggunakan suara default");
+                playDefaultBellSound(duration);
+            }
+        }
+
+        // Convert base64 to Blob
+        function base64ToBlob(base64, mimeType) {
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            
+            const byteArray = new Uint8Array(byteNumbers);
+            return new Blob([byteArray], { type: mimeType });
+        }
+
+        // Default bell sound dengan Web Audio API yang lebih baik
+        function playDefaultBellSound(duration) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Create a more pleasant bell sound
+                const baseFrequency = 800;
+                const bellDuration = 0.3;
+                const bellInterval = 0.7;
+                const totalBells = Math.max(1, Math.floor(duration / (bellDuration + bellInterval)));
+                
+                let currentTime = audioContext.currentTime;
+                
+                for (let i = 0; i < totalBells; i++) {
+                    // Add some variation to make it sound more natural
+                    const frequencyVariation = Math.random() * 50 - 25;
+                    const volumeVariation = 0.1 + Math.random() * 0.2;
+                    
+                    oscillator.frequency.setValueAtTime(baseFrequency + frequencyVariation, currentTime);
+                    gainNode.gain.setValueAtTime(volumeVariation * state.systemVolume, currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + bellDuration);
+                    
+                    currentTime += bellDuration + bellInterval;
+                }
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(currentTime);
+                
+                console.log("🔊 Suara default diputar");
+                
+            } catch (e) {
+                console.log("❌ Web Audio API tidak didukung di browser ini");
+            }
+        }
+
+        // Fungsi untuk menghentikan suara
+        function stopCurrentSound() {
+            if (state.currentAudio) {
+                state.currentAudio.pause();
+                state.currentAudio.currentTime = 0;
+                state.currentAudio = null;
+            }
+            
+            if (state.currentBellTimeout) {
+                clearTimeout(state.currentBellTimeout);
+                state.currentBellTimeout = null;
+            }
+        }
+
+        // Improved notification system
+        function showNotification(message, type = 'info') {
+            elements.notificationText.textContent = message;
+            elements.notification.className = 'notification';
+            elements.notification.classList.add(type);
+            elements.notification.classList.add('show');
+            
+            setTimeout(() => {
+                elements.notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Update jadwal aktif dengan highlight
+        function updateActiveSchedule(day, activeIndex) {
+            const scheduleItems = document.querySelectorAll('.schedule-item');
+            scheduleItems.forEach((item, index) => {
+                if (index === activeIndex) {
+                    item.classList.add('active');
+                    // Scroll to active item
+                    item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // Start auto bell dengan konfirmasi
+        function startAutoBell() {
+            if (state.isAutoMode) return;
+            
+            if (scheduleData[state.currentDay] && scheduleData[state.currentDay].length > 0) {
+                state.isAutoMode = true;
+                elements.startBtn.disabled = true;
+                elements.startBtn.innerHTML = '<i class="fas fa-pause"></i> Bel Otomatis Aktif';
+                elements.bellStatus.innerHTML = '<span class="status-indicator status-active"></span>Aktif';
+                showNotification("Mode bel otomatis diaktifkan", "success");
+                console.log("🚀 Mode otomatis diaktifkan");
+            } else {
+                showNotification("Tidak ada jadwal untuk hari ini. Silakan tambah jadwal terlebih dahulu.", "warning");
+            }
+        }
+
+        // Stop bell
+        function stopBell() {
+            state.isAutoMode = false;
+            elements.startBtn.disabled = false;
+            elements.startBtn.innerHTML = '<i class="fas fa-play"></i> Mulai Bel Otomatis';
+            elements.bellStatus.innerHTML = '<span class="status-indicator status-inactive"></span>Tidak Aktif';
+            showNotification("Mode bel otomatis dinonaktifkan", "warning");
+            
+            stopCurrentSound();
+            
+            const scheduleItems = document.querySelectorAll('.schedule-item');
+            scheduleItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            elements.nextBell.textContent = "-";
+            console.log("🛑 Mode otomatis dimatikan");
+        }
+
+        // Inisialisasi jadwal dengan template yang lebih baik
+        function initializeSchedule(day) {
+            elements.scheduleList.innerHTML = '';
+            elements.scheduleDay.textContent = day.charAt(0).toUpperCase() + day.slice(1);
+            
+            const daySchedule = scheduleData[day] || [];
+            
+            if (daySchedule.length === 0) {
+                elements.scheduleList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">
+                        <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>Tidak ada jadwal untuk hari ini</p>
+                        <button class="quick-action-btn" onclick="openEditModal('${day}')" style="margin-top: 15px;">
+                            <i class="fas fa-plus"></i> Tambah Jadwal
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            daySchedule.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'schedule-item';
+                li.innerHTML = `
+                    <div class="schedule-time">${item.time}</div>
+                    <div class="schedule-label">
+                        ${item.label}
+                        <div class="schedule-details">
+                            <span class="schedule-detail-item">
+                                <i class="fas fa-music"></i> ${soundData[item.sound]?.name || 'Default'}
+                            </span>
+                            <span class="schedule-detail-item">
+                                <i class="fas fa-clock"></i> ${item.duration} detik
+                            </span>
+                        </div>
+                    </div>
+                    <div class="schedule-item-actions">
+                        <button class="icon-btn edit-schedule" data-index="${index}" title="Edit Jadwal">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="icon-btn delete-schedule" data-index="${index}" title="Hapus Jadwal">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                elements.scheduleList.appendChild(li);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.edit-schedule').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.currentTarget.getAttribute('data-index');
+                    openEditModal(day, parseInt(index));
+                });
+            });
+            
+            document.querySelectorAll('.delete-schedule').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.currentTarget.getAttribute('data-index');
+                    deleteSchedule(day, parseInt(index));
+                });
+            });
+        }
+
+        // Open edit modal
+        function openEditModal(day, index = -1) {
+            state.editingIndex = index;
+            elements.editDay.value = day;
+            
+            const daySchedule = scheduleData[day] || [];
+            
+            if (index !== -1 && daySchedule[index]) {
+                const schedule = daySchedule[index];
+                elements.bellTime.value = schedule.time;
+                elements.bellLabel.value = schedule.label;
+                elements.bellSound.value = schedule.sound;
+                elements.bellDuration.value = schedule.duration;
+                elements.durationValue.textContent = `${schedule.duration} detik`;
+            } else {
+                elements.bellTime.value = "";
+                elements.bellLabel.value = "";
+                elements.bellSound.value = "default";
+                elements.bellDuration.value = 5;
+                elements.durationValue.textContent = "5 detik";
+            }
+            
+            elements.editModal.style.display = 'flex';
+        }
+
+        // Delete schedule dengan konfirmasi
+        function deleteSchedule(day, index) {
+            if (confirm("Apakah Anda yakin ingin menghapus jadwal ini?")) {
+                if (scheduleData[day]) {
+                    scheduleData[day].splice(index, 1);
+                    initializeSchedule(day);
+                    showNotification("Jadwal berhasil dihapus", "success");
+                    saveSchedulesToDB();
+                }
+            }
+        }
+
+        // Save schedule
+        function saveSchedule(e) {
+            e.preventDefault();
+            
+            const day = elements.editDay.value;
+            const time = elements.bellTime.value;
+            const label = elements.bellLabel.value;
+            const sound = elements.bellSound.value;
+            const duration = parseInt(elements.bellDuration.value);
+            
+            if (!scheduleData[day]) {
+                scheduleData[day] = [];
+            }
+            
+            if (state.editingIndex === -1) {
+                scheduleData[day].push({ time, label, sound, duration });
+                showNotification("Jadwal berhasil ditambahkan", "success");
+            } else {
+                scheduleData[day][state.editingIndex] = { time, label, sound, duration };
+                showNotification("Jadwal berhasil diperbarui", "success");
+            }
+            
+            scheduleData[day].sort((a, b) => a.time.localeCompare(b.time));
+            initializeSchedule(day);
+            elements.editModal.style.display = 'none';
+            saveSchedulesToDB();
+            
+            console.log(`💾 Jadwal disimpan: ${day} ${time} - ${label}`);
+        }
+
+        // Populate sound options
+        function populateSoundOptions() {
+            elements.bellSound.innerHTML = '';
+            
+            if (Object.keys(soundData).length === 0) {
+                const option = document.createElement('option');
+                option.value = "default";
+                option.textContent = "Tidak ada suara (gunakan default)";
+                elements.bellSound.appendChild(option);
+                return;
+            }
+            
+            for (const soundId in soundData) {
+                const option = document.createElement('option');
+                option.value = soundId;
+                option.textContent = soundData[soundId].name;
+                elements.bellSound.appendChild(option);
+            }
+            
+            // Update test sound select
+            elements.testSoundSelect.innerHTML = '<option value="">Pilih suara untuk di-test</option>';
+            for (const soundId in soundData) {
+                const option = document.createElement('option');
+                option.value = soundId;
+                option.textContent = soundData[soundId].name;
+                elements.testSoundSelect.appendChild(option);
+            }
+        }
+
+        // Populate sounds list
+        function populateSoundsList() {
+            elements.soundsList.innerHTML = '';
+            
+            if (Object.keys(soundData).length === 0) {
+                elements.soundsList.innerHTML = '<div class="empty-sound-message">Belum ada suara yang ditambahkan. Silakan tambahkan suara terlebih dahulu.</div>';
+                return;
+            }
+            
+            for (const soundId in soundData) {
+                const sound = soundData[soundId];
+                const soundItem = document.createElement('div');
+                soundItem.className = 'sound-item';
+                soundItem.innerHTML = `
+                    <div>
+                        <strong>${sound.name}</strong>
+                        <div class="sound-details">
+                            <span class="sound-detail-item">
+                                <i class="fas fa-hourglass-half"></i> ${sound.defaultDuration} detik
+                            </span>
+                            <span class="sound-detail-item">
+                                <i class="fas fa-volume-up"></i> ${Math.round(sound.volume * 100)}%
+                            </span>
+                            ${sound.type === 'uploaded' ? `
+                            <span class="sound-detail-item">
+                                <i class="fas fa-database"></i> Disimpan di database
+                            </span>
+                            ` : ''}
+                        </div>
+                        <div class="sound-controls">
+                            <button class="icon-btn play-sound" data-sound="${soundId}" title="Putar Suara">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <input type="range" min="0" max="100" value="${sound.volume * 100}" 
+                                   class="volume-slider" data-sound="${soundId}" title="Volume">
+                            <span>${Math.round(sound.volume * 100)}%</span>
+                        </div>
+                    </div>
+                    <div>
+                        ${soundId !== 'default' ? `
+                            <button class="icon-btn delete-sound" data-sound="${soundId}" title="Hapus Suara">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                elements.soundsList.appendChild(soundItem);
+            }
+            
+            // Add event listeners
+            document.querySelectorAll('.play-sound').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const soundId = e.currentTarget.getAttribute('data-sound');
+                    const duration = soundData[soundId].defaultDuration;
+                    playBellSound(soundId, duration);
+                });
+            });
+            
+            document.querySelectorAll('.volume-slider').forEach(slider => {
+                slider.addEventListener('input', (e) => {
+                    const soundId = e.target.getAttribute('data-sound');
+                    const volume = e.target.value / 100;
+                    soundData[soundId].volume = volume;
+                    e.target.nextElementSibling.textContent = `${e.target.value}%`;
+                    if (soundId !== 'default') {
+                        saveSoundToDB(soundId, soundData[soundId]);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.delete-sound').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const soundId = e.currentTarget.getAttribute('data-sound');
+                    if (confirm(`Apakah Anda yakin ingin menghapus suara "${soundData[soundId].name}"?`)) {
+                        delete soundData[soundId];
+                        deleteSoundFromDB(soundId);
+                        populateSoundsList();
+                        populateSoundOptions();
+                        showNotification("Suara berhasil dihapus", "success");
+                    }
+                });
+            });
+        }
+
+        // Handle multiple file upload
+        function handleFileUpload() {
+            elements.fileUpload.addEventListener('click', () => {
+                elements.soundFile.click();
+            });
+            
+            elements.soundFile.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                
+                if (files.length === 0) return;
+                
+                // Clear previous selection
+                state.selectedFiles = [];
+                
+                // Process each file
+                files.forEach(file => {
+                    // Check file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showNotification(`File ${file.name} terlalu besar (maksimal 5MB)`, "error");
+                        return;
+                    }
+                    
+                    // Generate a default name from the file name
+                    const fileName = file.name.replace(/\.[^/.]+$/, "");
+                    
+                    // Add to selected files array
+                    state.selectedFiles.push({
+                        file: file,
+                        name: fileName,
+                        duration: 5 // Default duration
+                    });
+                });
+                
+                // Update UI
+                updateFileList();
+            });
+            
+            // Add event listeners for batch actions
+            elements.addMultipleSoundsBtn.addEventListener('click', addMultipleSounds);
+            elements.clearFilesBtn.addEventListener('click', clearSelectedFiles);
+        }
+
+        // Update the file list UI
+        function updateFileList() {
+            if (state.selectedFiles.length === 0) {
+                elements.fileList.style.display = 'none';
+                elements.batchActions.style.display = 'none';
+                return;
+            }
+            
+            elements.fileList.style.display = 'block';
+            elements.batchActions.style.display = 'flex';
+            
+            // Clear current list
+            elements.fileList.innerHTML = '';
+            
+            // Add each file to the list
+            state.selectedFiles.forEach((fileObj, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                // Format file size
+                const fileSize = (fileObj.file.size / 1024).toFixed(1);
+                
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <i class="fas fa-file-audio file-icon"></i>
+                        <div>
+                            <div class="file-name">${fileObj.file.name}</div>
+                            <div class="file-size">${fileSize} KB</div>
+                        </div>
+                    </div>
+                    <input type="text" class="file-name-input" value="${fileObj.name}" data-index="${index}" placeholder="Nama suara">
+                    <div class="file-duration">
+                        <i class="fas fa-clock"></i>
+                        <input type="number" class="file-duration-input" value="${fileObj.duration}" data-index="${index}" min="1" max="30" style="width: 50px;">
+                        <span>detik</span>
+                    </div>
+                    <button class="remove-file" data-index="${index}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                elements.fileList.appendChild(fileItem);
+            });
+            
+            // Add event listeners for the file items
+            document.querySelectorAll('.file-name-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    state.selectedFiles[index].name = e.target.value;
+                });
+            });
+            
+            document.querySelectorAll('.file-duration-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    state.selectedFiles[index].duration = parseInt(e.target.value) || 5;
+                });
+            });
+            
+            document.querySelectorAll('.remove-file').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    state.selectedFiles.splice(index, 1);
+                    updateFileList();
+                });
+            });
+        }
+
+        // Add multiple sounds to the sound library
+        function addMultipleSounds() {
+            if (state.selectedFiles.length === 0) {
+                showNotification("Tidak ada file yang dipilih", "warning");
+                return;
+            }
+            
+            // Show progress bar
+            elements.uploadProgress.style.display = 'block';
+            elements.uploadProgressFill.style.width = '0%';
+            
+            let processedCount = 0;
+            const totalCount = state.selectedFiles.length;
+            
+            // Process each file
+            state.selectedFiles.forEach((fileObj, index) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const soundId = 'sound_' + Date.now() + '_' + index;
+                    
+                    soundData[soundId] = {
+                        name: fileObj.name,
+                        data: event.target.result.split(',')[1], // Remove data URL prefix
+                        volume: 0.7,
+                        defaultDuration: fileObj.duration,
+                        type: 'uploaded'
+                    };
+                    
+                    // Save to IndexedDB
+                    saveSoundToDB(soundId, soundData[soundId]);
+                    
+                    processedCount++;
+                    
+                    // Update progress
+                    const progress = (processedCount / totalCount) * 100;
+                    elements.uploadProgressFill.style.width = `${progress}%`;
+                    
+                    // If all files are processed
+                    if (processedCount === totalCount) {
+                        setTimeout(() => {
+                            // Hide progress bar
+                            elements.uploadProgress.style.display = 'none';
+                            
+                            // Clear file selection
+                            clearSelectedFiles();
+                            
+                            // Update UI
+                            populateSoundsList();
+                            populateSoundOptions();
+                            checkStorageUsage();
+                            
+                            showNotification(`${totalCount} suara berhasil ditambahkan`, "success");
+                        }, 500);
+                    }
+                };
+                
+                reader.readAsDataURL(fileObj.file);
+            });
+        }
+
+        // Clear selected files
+        function clearSelectedFiles() {
+            state.selectedFiles = [];
+            elements.soundFile.value = '';
+            updateFileList();
+        }
+
+        // Initialize the application
+        async function initializeApp() {
+            try {
+                // Initialize IndexedDB
+                await initDB();
+                
+                // Load data from IndexedDB
+                await loadSchedulesFromDB();
+                await loadSoundsFromDB();
+                
+                // Initialize UI
+                initializeSchedule(state.currentDay);
+                populateSoundOptions();
+                populateSoundsList();
+                handleFileUpload();
+                updateCurrentDate();
+                checkStorageUsage();
+                
+                // Start clock
+                updateClock();
+                setInterval(updateClock, 1000);
+                setInterval(updateCurrentDate, 60000);
+                
+                // Set initial volume
+                elements.volumeLevel.textContent = `${Math.round(state.systemVolume * 100)}%`;
+                
+                // Add event listeners
+                setupEventListeners();
+                
+                console.log("🚀 Aplikasi Bel Sekolah Premium siap digunakan!");
+                showNotification("Aplikasi siap digunakan!", "success");
+                
+            } catch (error) {
+                console.error("❌ Error inisialisasi aplikasi:", error);
+                showNotification("Error inisialisasi aplikasi", "error");
+                
+                // Fallback to localStorage if IndexedDB fails
+                loadFromLocalStorageFallback();
+            }
+        }
+
+        // Fallback to localStorage if IndexedDB fails
+        function loadFromLocalStorageFallback() {
+            try {
+                const savedSchedule = localStorage.getItem('bellSchedule');
+                if (savedSchedule) {
+                    scheduleData = JSON.parse(savedSchedule);
+                }
+                
+                const savedSounds = localStorage.getItem('bellSounds');
+                if (savedSounds) {
+                    const loadedSounds = JSON.parse(savedSounds);
+                    for (const soundId in loadedSounds) {
+                        soundData[soundId] = loadedSounds[soundId];
+                    }
+                }
+                
+                console.log("📂 Data dimuat dari localStorage (fallback)");
+            } catch (e) {
+                console.error("❌ Error memuat dari localStorage:", e);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Main controls
+            elements.startBtn.addEventListener('click', startAutoBell);
+            elements.manualBtn.addEventListener('click', () => {
+                ringBell("default", 5);
+                showNotification("Bel manual dibunyikan (5 detik)", "info");
+            });
+            elements.stopBtn.addEventListener('click', stopBell);
+            elements.editBtn.addEventListener('click', () => openEditModal(state.currentDay));
+            elements.soundBtn.addEventListener('click', () => {
+                elements.soundModal.style.display = 'flex';
+                checkStorageUsage();
+            });
+            
+            // Modal controls
+            elements.closeModal.addEventListener('click', () => elements.editModal.style.display = 'none');
+            elements.cancelBtn.addEventListener('click', () => elements.editModal.style.display = 'none');
+            elements.closeSoundModal.addEventListener('click', () => elements.soundModal.style.display = 'none');
+            elements.cancelSoundBtn.addEventListener('click', () => elements.soundModal.style.display = 'none');
+            elements.scheduleForm.addEventListener('submit', saveSchedule);
+            
+            // Day selector
+            elements.dayButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.dayButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.currentDay = btn.getAttribute('data-day');
+                    initializeSchedule(state.currentDay);
+                });
+            });
+            
+            // Duration slider
+            elements.bellDuration.addEventListener('input', () => {
+                elements.durationValue.textContent = `${elements.bellDuration.value} detik`;
+            });
+            
+            // Floating bell
+            elements.floatingBellBtn.addEventListener('click', () => {
+                ringBell("default", 3);
+                showNotification("Bel manual dibunyikan", "info");
+            });
+            
+            // Test selected sound button
+            elements.testSelectedSoundBtn.addEventListener('click', () => {
+                const selectedSoundId = elements.testSoundSelect.value;
+                if (!selectedSoundId) {
+                    showNotification("Silakan pilih suara terlebih dahulu", "warning");
+                    return;
+                }
+                
+                const duration = soundData[selectedSoundId].defaultDuration;
+                playBellSound(selectedSoundId, duration);
+                showNotification(`Test suara: ${soundData[selectedSoundId].name}`, "success");
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === elements.editModal) {
+                    elements.editModal.style.display = 'none';
+                }
+                if (e.target === elements.soundModal) {
+                    elements.soundModal.style.display = 'none';
+                }
+            });
+        }
+
+        // Start the application
+        initializeApp();
+    </script>
+</body>
+</html>
